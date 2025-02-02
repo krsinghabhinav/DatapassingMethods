@@ -1,0 +1,108 @@
+import 'package:chatapp/View/Auth/authpage.dart';
+import 'package:chatapp/View/homepage/hhh.dart';
+import 'package:get/get.dart';
+
+import '../View/Auth/widget/ChatpageDetails.dart';
+
+var pagePath = [
+  GetPage(
+    name: "/authPage",
+    page: () => Authpage(),
+    transition: Transition.downToUp,
+    transitionDuration: Duration(milliseconds: 500),
+  ),
+  GetPage(
+    name: "/homePage",
+    page: () => HomePageScreen(),
+    transition: Transition.leftToRight,
+    transitionDuration: Duration(milliseconds: 500),
+  ),
+  GetPage(
+    name: "/chatPageDetails",
+    page: () => ChatpageDetails(),
+    transition: Transition.rightToLeft,
+    transitionDuration: Duration(milliseconds: 500),
+  ),
+];
+=========================
+
+onTap: () {
+  Get.toNamed("/chatPageDetails", arguments: {
+    "name": chatList[index]["name"],
+    "image": chatList[index]["image"],
+    "message": chatList[index]["message"],
+  });
+},
+
+=================================
+
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+class ChatpageDetails extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // Receiving data
+    final Map<String, dynamic> chatData = Get.arguments;
+
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        title: Row(
+          children: [
+            CircleAvatar(
+              radius: 20,
+              backgroundImage: AssetImage(chatData["image"]),
+            ),
+            const SizedBox(width: 10),
+            Text(
+              chatData["name"],
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+      ),
+      body: Center(
+        child: Text("Message: ${chatData["message"]}"),
+      ),
+    );
+  }
+}
+
+
+================================import 'package:chatapp/config/pagePath.dart';
+import 'package:chatapp/config/themes.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import 'View/homepage/hhh.dart';
+import 'View/welcome/welcomepage.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
+    return GetMaterialApp(
+      getPages: pagePath,
+      title: 'ChatApp',
+      theme: lightTheme,
+      darkTheme: darkTheme,
+      // themeMode: ThemeMode.system,
+      themeMode: ThemeMode.dark,
+      home: HomePageScreen(),
+      // home: Welcomepage(),
+    );
+  }
+}

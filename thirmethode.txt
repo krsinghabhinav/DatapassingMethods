@@ -1,0 +1,118 @@
+import 'package:get/get.dart';
+
+class ChatController extends GetxController {
+  var name = "".obs;
+  var image = "".obs;
+  var message = "".obs;
+
+  void setChatDetails(String newName, String newImage, String newMessage) {
+    name.value = newName;
+    image.value = newImage;
+    message.value = newMessage;
+  }
+}
+
+
+========================
+
+
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:chatapp/config/images.dart';
+import 'package:chatapp/controller/chat_controller.dart';
+
+class Chatspage extends StatelessWidget {
+  Chatspage({super.key});
+
+  final ChatController chatController = Get.find(); // GetX Controller instance
+
+  @override
+  Widget build(BuildContext context) {
+    List<Map<String, String>> chatList = [
+      {
+        "name": "Saloni Singh",
+        "image": AssetsImages.profilePng,
+        "message": "Hello",
+        "time": "10AM",
+      },
+      {
+        "name": "Amit Sharma",
+        "image": AssetsImages.appiconPng,
+        "message": "Hi",
+        "time": "9AM",
+      },
+    ];
+
+    return ListView.builder(
+      itemCount: chatList.length,
+      itemBuilder: (context, index) {
+        return GestureDetector(
+          onTap: () {
+            // Controller me data update karo
+            chatController.setChatDetails(
+              chatList[index]["name"]!,
+              chatList[index]["image"]!,
+              chatList[index]["message"]!,
+            );
+            // Dusre page par navigate karo bina arguments ke
+            Get.toNamed("/chatPageDetails");
+          },
+          child: Card(
+            color: Theme.of(context).colorScheme.primaryContainer,
+            child: ListTile(
+              leading: CircleAvatar(
+                radius: 32,
+                backgroundImage: AssetImage(chatList[index]["image"]!),
+              ),
+              title: Text(chatList[index]["name"]!),
+              subtitle: Text(chatList[index]["message"]!),
+              trailing: Text(chatList[index]["time"]!),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+
+===========================
+
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:chatapp/controller/chat_controller.dart';
+
+class ChatpageDetails extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final ChatController chatController = Get.find(); // GetX Controller instance
+
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        title: Row(
+          children: [
+            Obx(() => CircleAvatar(
+                  radius: 20,
+                  backgroundImage: AssetImage(chatController.image.value),
+                )),
+            const SizedBox(width: 10),
+            Obx(() => Text(
+                  chatController.name.value,
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                )),
+          ],
+        ),
+      ),
+      body: Center(
+        child: Obx(() => Text("Message: ${chatController.message.value}")),
+      ),
+    );
+  }
+}
